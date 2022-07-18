@@ -1,2 +1,2 @@
 ### Hexlet tests and linter status:
-[![Actions Status](https://github.com/Herman2201/backend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Herman2201/backend-project-lvl3/actions)
+[![Actions Status](https://github.com/Herman2201/backend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Herman2201/backend-project-lvl3/actions)[![Maintainability](https://api.codeclimate.com/v1/badges/f91a1fe3decee61cd29f/maintainability)](https://codeclimate.com/github/Herman2201/backend-project-lvl3/maintainability)[![Test Coverage](https://api.codeclimate.com/v1/badges/f91a1fe3decee61cd29f/test_coverage)](https://codeclimate.com/github/Herman2201/backend-project-lvl3/test_coverage)
