@@ -2,3 +2,7 @@ node_modules
 .DS_Store
 coverage
 a.js
+.vscode/configurationCache.log
+.vscode/dryrun.log
+.vscode/settings.json
+.vscode/targets.log
