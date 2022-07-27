@@ -3,6 +3,9 @@ import fsp from 'fs/promises';
 import path from 'path';
 import * as cheerio from 'cheerio';
 import prettier from 'prettier';
+import debug from 'debug';
+import Listr from 'listr';
+import keys from 'lodash.keys';
 
 const options = {
   parser: 'html',
@@ -10,77 +13,87 @@ const options = {
 };
 const { format: beautify } = prettier;
 
-const getNamePage = (address) => {
-  const url = new URL(address);
-  const reg = new RegExp(/[^a-zA-z0-9]/gi);
-  return `${url.host}${url.pathname}`.replace(reg, '-');
+const debugLog = debug('loade-page');
+
+const tags = {
+  script: 'src',
+  img: 'src',
+  link: 'href',
 };
 
-const loadResurs = (html, url, dirPath) => {
+const getNamePage = ({ host, pathname }) => {
+  const reg = /[^a-zA-z0-9]/gi;
+  if (pathname === '/') {
+    return host.replace(reg, '-');
+  }
+  const { dir, name, ext } = path.parse(host + pathname);
+  return `${dir}/${name}`.replace(reg, '-') + ext;
+};
+
+const loadResours = (dirpath, link, name) => axios
+  .get(link, {
+    responseType: 'stream',
+  })
+  .then(({ data }) => {
+    debugLog(`Resource url: ${link} was loaded`);
+    return fsp.writeFile(path.join(dirpath, name), data, 'utf-8');
+  })
+  .then(() => {
+    debugLog(`Resource ${dirpath} is write to disk`);
+  });
+
+const getResourcePage = (address, dom, dirpath) => {
+  const promises = keys(tags).reduce(
+    (acc, tag) => [
+      ...acc,
+      ...dom(tag)
+        .map((index, element) => {
+          const valueAttr = dom(element).attr(tags[tag]);
+          const linkAttr = new URL(valueAttr, address.origin);
+          if (address.host !== linkAttr.host) {
+            return {};
+          }
+          const namePage = getNamePage(linkAttr);
+          const ext = path.parse(namePage).ext ? '' : '.html';
+          dom(element).attr(tags[tag], path.join(dirpath, `${namePage}${ext}`));
+          return {
+            title: `${linkAttr.href}`,
+            task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
+          };
+        })
+        .get(),
+    ],
+    [],
+  );
+  return promises;
+};
+
+const heandlerPage = (html, url, output) => {
   const $ = cheerio.load(html);
-  const dirName = `${getNamePage(url)}_file`;
-  const newDirPath = path.join(dirPath, dirName);
-  const assets = $('img').attr('src');
-  const parseUrl = path.parse(assets);
-  const newPathAssetc =
-    newDirPath +
-    '/' +
-    getNamePage('http:' + parseUrl.dir + '/' + parseUrl.name) +
-    parseUrl.ext;
-  $('img').attr().src = newPathAssetc;
+  const name = getNamePage(url);
+  const dirName = `${name}_file`;
+  const fileName = `${name}.html`;
+  const dirpath = path.join(output, dirName);
   return fsp
-    .mkdir(newDirPath)
-    .then(() => {
-      const url1 = new URL(assets, url);
-      return axios.get(url1.href, {
-        method: 'get',
-        responseType: 'stream',
+    .mkdir(dirpath)
+    .then(() => getResourcePage(url, $, dirpath))
+    .then((promises) => {
+      const list = new Listr(promises, {
+        concurrent: true,
+        exitOnError: false,
       });
+      return list.run();
     })
-    .then(({ data }) => fsp.writeFile(newPathAssetc, data))
-    .then(() =>
-      fsp.writeFile(
-        path.join(dirPath, `${getNamePage(url)}.html`),
-        beautify($.html(), options)
-      )
-    )
-    .catch(console.error);
+    .then(() => fsp.writeFile(
+      path.join(output, fileName),
+      beautify($.html(), options).trim(),
+    ))
+    .then(() => fileName);
 };
 
 const pageLoader = ({ output }, link) => {
-  const name = getNamePage(link);
-  const file = `${getNamePage(link)}.html`;
-  return (
-    axios
-      .get(link)
-      .then(({ data }) => loadResurs(data, link, output))
-      // fsp.writeFile(path.join(output, file), response.data))
-      // .then(() => fsp.readFile(file, 'utf8'))
-      // .then((data) => {
-      //   const $ = cheerio.load(data);
-      //   const assets = $('img').attr('src');
-      //   const parseUrl = path.parse(assets);
-      //   axios({
-      //     url: assets,
-      //     method: 'get',
-      //     responseType: 'stream',
-      //   })
-      //     .then(({ data }) => fsp.writeFile(
-      //       path.join(
-      //         dir,
-      //         `${name
-      //         }-${
-      //           cleanName(`${parseUrl.dir}/${parseUrl.name}`)
-      //         }${parseUrl.ext}`,
-      //       ),
-      //       data,
-      //     ))
-      //     .catch(console.error);
-      // })
-      .catch((e) => {
-        throw e;
-      })
-  );
+  const url = new URL(link);
+  return axios.get(link).then(({ data }) => heandlerPage(data, url, output));
 };
 
 export default pageLoader;

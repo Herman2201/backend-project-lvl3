@@ -15,6 +15,11 @@ program
     `${currentDir}`,
   )
   .action((link, path) => {
-    pageLoader(path, link).then(() => console.log('correct'));
+    pageLoader(path, link)
+      .then((namePage) => console.log(`Page was downloaded as '${namePage}'`))
+      .catch((error) => {
+        console.error(`${error.code}: ${error.message}`);
+        process.exit(1);
+      });
   })
   .parse(process.argv);
