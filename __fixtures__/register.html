@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Login page</title>
+    <link rel="stylesheet" href="/public/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+    <div class="image__fon">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-offset-3 col-md-6">
+            <div class="tab" role="tabpanel">
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                  <a aria-controls="home" role="tab" data-toggle="tab"
+                    >sign up</a
+                  >
+                </li>
+              </ul>
+              <!-- Tab panes -->
+              <div class="tab-content tabs">
+                <div
+                  role="tabpanel"
+                  class="tab-pane fade in active"
+                  id="Section1"
+                >
+                  <!-- login form -->
+                  <div class="form-horizontal">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">First Name</label>
+                      <input id="login_name" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Email address</label>
+                      <input
+                        id="email_name"
+                        type="email"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Password</label>
+                      <input
+                        id="password"
+                        type="password"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1"
+                        >Confirm password</label
+                      >
+                      <input
+                        id="password_confirm"
+                        type="password"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                    <div class="form-group btn-wrap">
+                      <button id="btn-go" type="submit" class="btn btn-default">
+                        Sign up
+                      </button>
+                      <a class="btn btn-default" href="/login">
+                        If you already have an account
+                      </a>
+                    </div>
+                    <!-- login form -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/script/registerPage.js"></script>
+  </body>
+</html>
