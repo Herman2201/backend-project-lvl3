@@ -45,7 +45,7 @@ jobs:
         # https://github.com/paambaati/codeclimate-action
         uses: paambaati/codeclimate-action@v2.7.4
         env:
-          TEST_COVARAGE_ID: ${{ secrets.TEST_COVARAGE_ID }}
+          CC_TEST_COVARAGE_ID: ${{ secrets.TEST_COVARAGE_ID }}
         with:
           coverageCommand: make test-coverage
           debug: true
