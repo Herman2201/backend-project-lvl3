@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import pageLoader from '../src/index.js';
+import { pageLoader } from '../src/index.js';
 
 const currentDir = process.cwd();
 
@@ -15,7 +15,7 @@ program
     `${currentDir}`,
   )
   .action((link, path) => {
-    pageLoader(path, link)
+    pageLoader(link, path)
       .then((namePage) => console.log(`Page was downloaded as '${namePage}'`))
       .catch((error) => {
         console.error(`${error.code}: ${error.message}`);

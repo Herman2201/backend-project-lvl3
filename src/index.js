@@ -23,11 +23,12 @@ const tags = {
 
 const getNamePage = ({ host, pathname }) => {
   const reg = /[^a-zA-z0-9]/gi;
-  if (pathname === '/') {
-    return host.replace(reg, '-');
-  }
   const { dir, name, ext } = path.parse(host + pathname);
-  return `${dir}/${name}`.replace(reg, '-') + ext;
+  const result = `${dir}/${name}`
+    .split(reg)
+    .filter((item) => item !== '')
+    .join('-');
+  return `${result}${ext}`;
 };
 
 const loadResours = (dirpath, link, name) => axios
@@ -43,28 +44,25 @@ const loadResours = (dirpath, link, name) => axios
   });
 
 const getResourcePage = (address, dom, dirpath) => {
-  const promises = keys(tags).reduce(
-    (acc, tag) => {
-      const resource = dom(tag)
-        .map((index, element) => {
-          const valueAttr = dom(element).attr(tags[tag]);
-          const linkAttr = new URL(valueAttr, address.origin);
-          if (address.host !== linkAttr.host) {
-            return {};
-          }
-          const namePage = getNamePage(linkAttr);
-          const ext = path.parse(namePage).ext ? '' : '.html';
-          dom(element).attr(tags[tag], path.join(dirpath, `${namePage}${ext}`));
-          return {
-            title: `${linkAttr.href}`,
-            task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
-          };
-        })
-        .get();
-      return [...acc, ...resource];
-    },
-    [],
-  );
+  const promises = keys(tags).reduce((acc, tag) => {
+    const resource = dom(tag)
+      .map((index, element) => {
+        const valueAttr = dom(element).attr(tags[tag]);
+        const linkAttr = new URL(valueAttr, address.origin);
+        if (address.host !== linkAttr.host) {
+          return [];
+        }
+        const namePage = getNamePage(linkAttr);
+        const ext = path.parse(namePage).ext ? '' : '.html';
+        dom(element).attr(tags[tag], path.join(dirpath, `${namePage}${ext}`));
+        return {
+          title: `${linkAttr.href}`,
+          task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
+        };
+      })
+      .get();
+    return [...acc, ...resource];
+  }, []);
   return promises;
 };
 
@@ -91,9 +89,9 @@ const heandlerPage = (html, url, output) => {
     .then(() => fileName);
 };
 
-const pageLoader = ({ output }, link) => {
+const pageLoader = (link, { output } = process.cwd()) => {
   const url = new URL(link);
   return axios.get(link).then(({ data }) => heandlerPage(data, url, output));
 };
 
-export default pageLoader;
+export { pageLoader, getNamePage };
