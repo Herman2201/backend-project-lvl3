@@ -44,9 +44,8 @@ const loadResours = (dirpath, link, name) => axios
 
 const getResourcePage = (address, dom, dirpath) => {
   const promises = keys(tags).reduce(
-    (acc, tag) => [
-      ...acc,
-      ...dom(tag)
+    (acc, tag) => {
+      const resource = dom(tag)
         .map((index, element) => {
           const valueAttr = dom(element).attr(tags[tag]);
           const linkAttr = new URL(valueAttr, address.origin);
@@ -61,8 +60,9 @@ const getResourcePage = (address, dom, dirpath) => {
             task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
           };
         })
-        .get(),
-    ],
+        .get();
+      return [...acc, ...resource];
+    },
     [],
   );
   return promises;
