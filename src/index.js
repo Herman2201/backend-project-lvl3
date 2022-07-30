@@ -71,6 +71,7 @@ const heandlerPage = (html, url, output) => {
   const name = getNamePage(url);
   const dirName = `${name}_file`;
   const fileName = `${name}.html`;
+  console.log(output);
   const dirpath = path.join(output, dirName);
   return fsp
     .mkdir(dirpath)
