@@ -6,6 +6,7 @@ import prettier from 'prettier';
 import debug from 'debug';
 import Listr from 'listr';
 import keys from 'lodash.keys';
+import { cwd } from 'process';
 
 const options = {
   parser: 'html',
@@ -71,7 +72,6 @@ const heandlerPage = (html, url, output) => {
   const name = getNamePage(url);
   const dirName = `${name}_file`;
   const fileName = `${name}.html`;
-  console.log(output);
   const dirpath = path.join(output, dirName);
   return fsp
     .mkdir(dirpath)
@@ -89,8 +89,10 @@ const heandlerPage = (html, url, output) => {
     .then(() => fileName);
 };
 
-const pageLoader = (link, { output } = process.cwd()) => {
+const pageLoader = (link, { output } = cwd()) => {
   const url = new URL(link);
+  console.log(url);
+  console.log(output);
   return axios.get(link).then(({ data }) => heandlerPage(data, url, output));
 };
 
