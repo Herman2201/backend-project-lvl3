@@ -2,7 +2,7 @@
 
 [![Actions Status](https://github.com/Herman2201/backend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Herman2201/backend-project-lvl3/actions)
 [![test](https://github.com/Herman2201/backend-project-lvl3/actions/workflows/test-chek.yml/badge.svg)](https://github.com/Herman2201/backend-project-lvl3/actions/workflows/test-chek.yml)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e75e9f1522a7ec37ec6c/maintainability)](https://codeclimate.com/github/Herman2201/backend-project-lvl23/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e75e9f1522a7ec37ec6c/maintainability)](https://codeclimate.com/github/Herman2201/backend-project-lvl3/maintainability)
 <a href="https://codeclimate.com/github/Herman2201/backend-project-lvl3/test_coverage"><img src="https://api.codeclimate.com/v1/badges/e75e9f1522a7ec37ec6c/test_coverage" /></a>
 
 ### <center>Page loader</center>
