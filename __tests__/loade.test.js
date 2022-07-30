@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import fsp from 'fs/promises';
 import { test, expect, beforeEach } from '@jest/globals';
 import nock from 'nock';
-import { pageLoader, getNamePage } from '../src/index.js';
+import pageLoader from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,12 +24,6 @@ beforeEach(async () => {
   jsFile = await fsp.readFile(getFixturePath('packs/js/runtime.js'), 'utf-8');
   image = await fsp.readFile(getFixturePath('assets/professions/nodejs.jpg'), 'utf-8');
   htmlFile = await fsp.readFile(getFixturePath('register.html'));
-});
-
-test('Correct name', () => {
-  const url = new URL('https://ru.hexlet.io/courses');
-  const expected = 'ru-hexlet-io-courses.html';
-  expect(`${getNamePage(url)}.html`).toBe(expected);
 });
 
 test('load page', async () => {

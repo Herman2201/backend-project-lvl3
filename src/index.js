@@ -94,4 +94,4 @@ const pageLoader = (link, { output } = process.cwd()) => {
   return axios.get(link).then(({ data }) => heandlerPage(data, url, output));
 };
 
-export { pageLoader, getNamePage };
+export default pageLoader;

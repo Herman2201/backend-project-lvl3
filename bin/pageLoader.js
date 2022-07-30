@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import { pageLoader } from '../src/index.js';
+import pageLoader from '../src/index.js';
 
 const currentDir = process.cwd();
 
@@ -12,7 +12,7 @@ program
   .option(
     '-o, --output [dir]',
     'output dir (default: "/home/user/current-dir")',
-    `${currentDir}`,
+    `${currentDir}`
   )
   .action((link, path) => {
     pageLoader(link, path)
