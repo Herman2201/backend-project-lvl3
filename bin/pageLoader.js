@@ -12,7 +12,7 @@ program
   .option(
     '-o, --output [dir]',
     'output dir (default: "/home/user/current-dir")',
-    `${currentDir}`
+    `${currentDir}`,
   )
   .action((link, path) => {
     pageLoader(link, path.output)

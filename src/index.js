@@ -84,14 +84,13 @@ const heandlerPage = (html, url, output) => {
       .catch((error) => ({ result: 'error', error })))
     .then(() => fsp.writeFile(
       path.join(output, fileName),
-      beautify($.html(), options).trim()
+      beautify($.html(), options).trim(),
     ))
     .then(() => fileName);
 };
 
 const pageLoader = (link, output = cwd()) => {
   const url = new URL(link);
-  console.log(output);
   return axios.get(link).then(({ data }) => heandlerPage(data, url, output));
 };
 
