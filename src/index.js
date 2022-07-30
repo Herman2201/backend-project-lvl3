@@ -32,6 +32,8 @@ const getNamePage = ({ host, pathname }) => {
   return `${result}${ext}`;
 };
 
+const bildDirectoryName = (url) => `${getNamePage(url)}_file`;
+
 const loadResours = (dirpath, link, name) => axios
   .get(link, {
     responseType: 'stream',
@@ -53,7 +55,7 @@ const getResourcePage = (address, dom, dirpath) => {
         if (valueAttr && address.host === linkAttr.host) {
           const namePage = getNamePage(linkAttr);
           const ext = path.parse(namePage).ext ? '' : '.html';
-          dom(element).attr(tags[tag], path.join(`${namePage}_file`, `${namePage}${ext}`));
+          dom(element).attr(tags[tag], path.join(bildDirectoryName(linkAttr), `${namePage}${ext}`));
           return {
             title: `${linkAttr.href}`,
             task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
