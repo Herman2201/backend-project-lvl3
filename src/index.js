@@ -53,7 +53,7 @@ const getResourcePage = (address, dom, dirpath) => {
         if (valueAttr && address.host === linkAttr.host) {
           const namePage = getNamePage(linkAttr);
           const ext = path.parse(namePage).ext ? '' : '.html';
-          dom(element).attr(tags[tag], path.join(dirpath, `${namePage}${ext}`));
+          dom(element).attr(tags[tag], path.join(`${namePage}_file`, `${namePage}${ext}`));
           return {
             title: `${linkAttr.href}`,
             task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
