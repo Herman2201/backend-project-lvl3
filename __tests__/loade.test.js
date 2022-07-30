@@ -43,7 +43,7 @@ test('load page', async () => {
     .reply(200, image)
     .get('/register')
     .reply(200, htmlFile);
-  await pageLoader('https://ru.hexlet.io/courses', { output: distPath });
+  await pageLoader('https://ru.hexlet.io/courses', distPath);
   const currDir = await fsp.readdir(distPath);
   const resourseDir = await fsp.readdir(
     path.join(distPath, 'ru-hexlet-io-courses_file')

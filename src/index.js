@@ -89,9 +89,8 @@ const heandlerPage = (html, url, output) => {
     .then(() => fileName);
 };
 
-const pageLoader = (link, { output } = cwd()) => {
+const pageLoader = (link, output = cwd()) => {
   const url = new URL(link);
-  console.log(url);
   console.log(output);
   return axios.get(link).then(({ data }) => heandlerPage(data, url, output));
 };

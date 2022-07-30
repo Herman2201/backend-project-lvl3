@@ -15,7 +15,7 @@ program
     `${currentDir}`
   )
   .action((link, path) => {
-    pageLoader(link, path)
+    pageLoader(link, path.output)
       .then((namePage) => console.log(`Page was downloaded as '${namePage}'`))
       .catch((error) => {
         console.error(`${error.code}: ${error.message}`);
