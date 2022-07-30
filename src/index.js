@@ -7,10 +7,6 @@ import debug from 'debug';
 import Listr from 'listr';
 import keys from 'lodash.keys';
 
-const pathS = `${path.resolve()}/__tests__/10-prepare.test.js`;
-
-fsp.readFile(pathS, 'utf8').then((data) => console.log(data));
-
 const options = {
   parser: 'html',
   tabWidth: 2,
