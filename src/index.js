@@ -32,8 +32,6 @@ const getNamePage = ({ host, pathname }) => {
   return `${result}${ext}`;
 };
 
-const bildDirectoryName = (url) => `${getNamePage(url)}_file`;
-
 const loadResours = (dirpath, link, name) => axios
   .get(link, {
     responseType: 'stream',
@@ -46,7 +44,7 @@ const loadResours = (dirpath, link, name) => axios
     debugLog(`Resource ${dirpath} is write to disk`);
   });
 
-const getResourcePage = (address, dom, dirpath) => {
+const getResourcePage = (address, dom, dirpath, dirName) => {
   const promises = keys(tags).reduce((acc, tag) => {
     const resource = dom(tag)
       .map((index, element) => {
@@ -55,7 +53,7 @@ const getResourcePage = (address, dom, dirpath) => {
         if (valueAttr && address.host === linkAttr.host) {
           const namePage = getNamePage(linkAttr);
           const ext = path.parse(namePage).ext ? '' : '.html';
-          dom(element).attr(tags[tag], path.join(bildDirectoryName(linkAttr), `${namePage}${ext}`));
+          dom(element).attr(tags[tag], path.join(dirName, `${namePage}${ext}`));
           return {
             title: `${linkAttr.href}`,
             task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
@@ -72,12 +70,12 @@ const getResourcePage = (address, dom, dirpath) => {
 const heandlerPage = (html, url, output) => {
   const $ = cheerio.load(html);
   const name = getNamePage(url);
-  const dirName = `${name}_file`;
+  const dirName = `${name}_files`;
   const fileName = `${name}.html`;
   const dirpath = path.join(output, dirName);
   return fsp
     .mkdir(dirpath)
-    .then(() => getResourcePage(url, $, dirpath))
+    .then(() => getResourcePage(url, $, dirpath, dirName))
     .then((promises) => new Listr(promises, {
       concurrent: true,
       exitOnError: false,

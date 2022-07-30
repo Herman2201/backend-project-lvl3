@@ -46,12 +46,12 @@ test('load page', async () => {
   await pageLoader('https://ru.hexlet.io/courses', distPath);
   const currDir = await fsp.readdir(distPath);
   const resourseDir = await fsp.readdir(
-    path.join(distPath, 'ru-hexlet-io-courses_file')
+    path.join(distPath, 'ru-hexlet-io-courses_files')
   );
   const fileResource = await fsp.readFile(
     path.join(
       distPath,
-      'ru-hexlet-io-courses_file',
+      'ru-hexlet-io-courses_files',
       'ru-hexlet-io-assets-application.css'
     )
   );
