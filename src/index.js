@@ -49,16 +49,16 @@ const getResourcePage = (address, dom, dirpath) => {
       .map((index, element) => {
         const valueAttr = dom(element).attr(tags[tag]);
         const linkAttr = new URL(valueAttr, address.origin);
-        if (address.host !== linkAttr.host) {
-          return [];
+        if (valueAttr && address.host === linkAttr.host) {
+          const namePage = getNamePage(linkAttr);
+          const ext = path.parse(namePage).ext ? '' : '.html';
+          dom(element).attr(tags[tag], path.join(dirpath, `${namePage}${ext}`));
+          return {
+            title: `${linkAttr.href}`,
+            task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
+          };
         }
-        const namePage = getNamePage(linkAttr);
-        const ext = path.parse(namePage).ext ? '' : '.html';
-        dom(element).attr(tags[tag], path.join(dirpath, `${namePage}${ext}`));
-        return {
-          title: `${linkAttr.href}`,
-          task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
-        };
+        return [];
       })
       .get();
     return [...acc, ...resource];
@@ -75,13 +75,12 @@ const heandlerPage = (html, url, output) => {
   return fsp
     .mkdir(dirpath)
     .then(() => getResourcePage(url, $, dirpath))
-    .then((promises) => {
-      const list = new Listr(promises, {
-        concurrent: true,
-        exitOnError: false,
-      });
-      return list.run();
+    .then((promises) => new Listr(promises, {
+      concurrent: true,
+      exitOnError: false,
     })
+      .run()
+      .catch((error) => ({ result: 'error', error })))
     .then(() => fsp.writeFile(
       path.join(output, fileName),
       beautify($.html(), options).trim()

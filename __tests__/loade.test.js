@@ -20,9 +20,14 @@ let htmlFile;
 beforeEach(async () => {
   distPath = await fsp.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
   fileExpect = await fsp.readFile(getFixturePath('courses.html'), 'utf-8');
-  cssFile = await fsp.readFile(getFixturePath('assets/application.css', 'utf-8'));
+  cssFile = await fsp.readFile(
+    getFixturePath('assets/application.css', 'utf-8')
+  );
   jsFile = await fsp.readFile(getFixturePath('packs/js/runtime.js'), 'utf-8');
-  image = await fsp.readFile(getFixturePath('assets/professions/nodejs.jpg'), 'utf-8');
+  image = await fsp.readFile(
+    getFixturePath('assets/professions/nodejs.jpg'),
+    'utf-8'
+  );
   htmlFile = await fsp.readFile(getFixturePath('register.html'));
 });
 
@@ -40,8 +45,18 @@ test('load page', async () => {
     .reply(200, htmlFile);
   await pageLoader('https://ru.hexlet.io/courses', { output: distPath });
   const currDir = await fsp.readdir(distPath);
-  const resourseDir = await fsp.readdir(path.join(distPath, 'ru-hexlet-io-courses_file'));
+  const resourseDir = await fsp.readdir(
+    path.join(distPath, 'ru-hexlet-io-courses_file')
+  );
+  const fileResource = await fsp.readFile(
+    path.join(
+      distPath,
+      'ru-hexlet-io-courses_file',
+      'ru-hexlet-io-assets-application.css'
+    )
+  );
 
+  expect(fileResource).toEqual(cssFile);
   expect(currDir.length).toBe(2);
   expect(resourseDir.length).toBe(4);
   expect(req.isDone()).toBeTruthy();
@@ -55,6 +70,13 @@ test('bad request', async () => {
 
 test('bad responce', async () => {
   const host = 'https://ru.hexlet.io/';
-  nock(host).get('/courses').reply(200, '<html><head><meta name="viewport" content="width=device"></head><body></body><html>');
-  await expect(pageLoader(`${host}/corses`, path.join(distPath, 'badpath'))).rejects.toThrow();
+  nock(host)
+    .get('/courses')
+    .reply(
+      200,
+      '<html><head><meta name="viewport" content="width=device"></head><body></body><html>'
+    );
+  await expect(
+    pageLoader(`${host}/corses`, path.join(distPath, 'badpath'))
+  ).rejects.toThrow();
 });
