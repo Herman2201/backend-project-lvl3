@@ -66,7 +66,7 @@ Compares two configuration files and shows a difference.
 
 Options:
   -V, --version       output the version number
-  -o, --output [dir]  output dir (default: "/home/user/current-dir") (default: "/Users/hermanuskalo/backend-project-lvl3")
+  -o, --output [dir]  output dir (default: "/home/user/current-dir") (default: "/home/user/current-dir")
   -h, --help          display help for command
 ```
 
