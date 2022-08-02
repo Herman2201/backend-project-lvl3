@@ -32,7 +32,7 @@ const getNamePage = ({ host, pathname }) => {
   return `${result}${ext}`;
 };
 
-const loadResours = (dirpath, link, name) => axios
+const loadResource = (dirpath, link, name) => axios
   .get(link, {
     responseType: 'stream',
   })
@@ -44,10 +44,10 @@ const loadResours = (dirpath, link, name) => axios
     debugLog(`Resource ${dirpath} is write to disk`);
   });
 
-const getResourcePage = (address, dom, dirpath, dirName) => {
+const getLoadTasks = (address, dom, dirpath, dirName) => {
   const promises = keys(tags).reduce((acc, tag) => {
     const resource = dom(tag)
-      .map((index, element) => {
+      .map((_, element) => {
         const valueAttr = dom(element).attr(tags[tag]);
         const linkAttr = new URL(valueAttr, address.origin);
         if (valueAttr && address.host === linkAttr.host) {
@@ -55,8 +55,8 @@ const getResourcePage = (address, dom, dirpath, dirName) => {
           const ext = path.parse(namePage).ext ? '' : '.html';
           dom(element).attr(tags[tag], path.join(dirName, `${namePage}${ext}`));
           return {
-            title: `${linkAttr.href}`,
-            task: () => loadResours(dirpath, linkAttr.href, `${namePage}${ext}`),
+            title: linkAttr.href,
+            task: () => loadResource(dirpath, linkAttr.href, `${namePage}${ext}`),
           };
         }
         return [];
@@ -75,18 +75,19 @@ const heandlerPage = (html, url, output) => {
   const dirpath = path.join(output, dirName);
   return fsp
     .mkdir(dirpath)
-    .then(() => getResourcePage(url, $, dirpath, dirName))
-    .then((promises) => new Listr(promises, {
-      concurrent: true,
-      exitOnError: false,
+    .then(() => {
+      const promises = getLoadTasks(url, $, dirpath, dirName);
+      return new Listr(promises, {
+        concurrent: true,
+        exitOnError: false,
+      })
+        .run()
+        .catch((error) => ({ result: 'error', error }));
     })
-      .run()
-      .catch((error) => ({ result: 'error', error })))
     .then(() => fsp.writeFile(
       path.join(output, fileName),
-      beautify($.html(), options).trim(),
-    ))
-    .then(() => fileName);
+      beautify($.html(), options).trim()
+    ));
 };
 
 const pageLoader = (link, output = cwd()) => {

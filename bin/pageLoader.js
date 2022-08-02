@@ -11,8 +11,8 @@ program
   .argument('<url>')
   .option(
     '-o, --output [dir]',
-    'output dir (default: "/home/user/current-dir")',
-    `${currentDir}`,
+    'output dir',
+    `${currentDir}`
   )
   .action((link, path) => {
     pageLoader(link, path.output)
