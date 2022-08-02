@@ -86,7 +86,7 @@ const heandlerPage = (html, url, output) => {
     })
     .then(() => fsp.writeFile(
       path.join(output, fileName),
-      beautify($.html(), options).trim()
+      beautify($.html(), options).trim(),
     ));
 };
 

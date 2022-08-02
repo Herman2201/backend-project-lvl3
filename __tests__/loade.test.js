@@ -22,12 +22,12 @@ beforeEach(async () => {
   fileExpect = await fsp.readFile(getFixturePath('courses.html'), 'utf-8');
   cssFile = await fsp.readFile(
     getFixturePath('assets/application.css'),
-    'utf-8'
+    'utf-8',
   );
   jsFile = await fsp.readFile(getFixturePath('packs/js/runtime.js'), 'utf-8');
   image = await fsp.readFile(
     getFixturePath('assets/professions/nodejs.jpg'),
-    'utf-8'
+    'utf-8',
   );
   htmlFile = await fsp.readFile(getFixturePath('register.html'), 'utf-8');
 });
@@ -58,39 +58,39 @@ test('check loading resource', async () => {
   await pageLoader('https://ru.hexlet.io/courses', distPath);
   const currDir = await fsp.readdir(distPath);
   const resourseDir = await fsp.readdir(
-    path.join(distPath, 'ru-hexlet-io-courses_files')
+    path.join(distPath, 'ru-hexlet-io-courses_files'),
   );
   const fileResourceCss = await fsp.readFile(
     path.join(
       distPath,
       'ru-hexlet-io-courses_files',
-      'ru-hexlet-io-assets-application.css'
+      'ru-hexlet-io-assets-application.css',
     ),
-    'utf-8'
+    'utf-8',
   );
   const fileResourceJs = await fsp.readFile(
     path.join(
       distPath,
       'ru-hexlet-io-courses_files',
-      'ru-hexlet-io-packs-js-runtime.js'
+      'ru-hexlet-io-packs-js-runtime.js',
     ),
-    'utf-8'
+    'utf-8',
   );
   const fileResourceImage = await fsp.readFile(
     path.join(
       distPath,
       'ru-hexlet-io-courses_files',
-      'ru-hexlet-io-assets-professions-nodejs.png'
+      'ru-hexlet-io-assets-professions-nodejs.png',
     ),
-    'utf-8'
+    'utf-8',
   );
   const fileResourceHtml = await fsp.readFile(
     path.join(
       distPath,
       'ru-hexlet-io-courses_files',
-      'ru-hexlet-io-register.html'
+      'ru-hexlet-io-register.html',
     ),
-    'utf-8'
+    'utf-8',
   );
   expect(fileResourceCss).toEqual(cssFile);
   expect(fileResourceJs).toEqual(jsFile);
@@ -112,9 +112,9 @@ test('bad responce', async () => {
     .get('/courses')
     .reply(
       200,
-      '<html><head><meta name="viewport" content="width=device"></head><body></body><html>'
+      '<html><head><meta name="viewport" content="width=device"></head><body></body><html>',
     );
   await expect(
-    pageLoader(`${host}/corses`, path.join(distPath, 'badpath'))
+    pageLoader(`${host}/corses`, path.join(distPath, 'badpath')),
   ).rejects.toThrow();
 });
